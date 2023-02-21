@@ -4,9 +4,9 @@ using JetBrains.dotMemoryUnit;
 
 namespace Tests
 {
-    public class Tests
+    public class LocationProviderTests
     {
-        private ILocationProvider locationProvider;
+        private ILocationProvider locationProvider = null!;
 
         [SetUp]
         public void Setup()
@@ -55,8 +55,6 @@ namespace Tests
         public async Task GetNearbyLocations_MemoryTest((string Name, double Latitude, double Longitude, int MaxDistance, int Limit) testCase)
         {
             // Arrange
-            long allocatedBytes = 0;
-            long collectedBytes = 0;
             const int memoryDelta = 20000;
             const int memoryPerItem = 150;
             var checkPoint1 = dotMemory.Check();
@@ -67,8 +65,8 @@ namespace Tests
             // Assert
             dotMemory.Check(memory =>
             {
-                allocatedBytes = memory.GetTrafficFrom(checkPoint1).AllocatedMemory.SizeInBytes;
-                collectedBytes = memory.GetTrafficFrom(checkPoint1).CollectedMemory.SizeInBytes;
+                var allocatedBytes = memory.GetTrafficFrom(checkPoint1).AllocatedMemory.SizeInBytes;
+                var collectedBytes = memory.GetTrafficFrom(checkPoint1).CollectedMemory.SizeInBytes;
                 Assert.LessOrEqual(allocatedBytes - collectedBytes, testCase.Limit * memoryPerItem + memoryDelta);
 
                 Console.WriteLine($"For {testCase.Name} {allocatedBytes} bytes were allocated and {collectedBytes} bytes were collected after.");

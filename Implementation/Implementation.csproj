@@ -8,11 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FastCSV" Version="1.0.1" />
-        <PackageReference Include="ServiceStack.Text" Version="6.6.0" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Update="Resources\locations.csv">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

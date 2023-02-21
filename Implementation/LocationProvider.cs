@@ -2,13 +2,26 @@
 
 namespace Implementation
 {
+    /// <summary>
+    /// Service responsible for providing locations information.
+    /// </summary>
     public interface ILocationProvider
     {
+        /// <summary>
+        /// Searches for up to maxResults locations around the passed one in maxDistance radius area.
+        /// </summary>
+        /// <param name="location">Current location.</param>
+        /// <param name="maxDistance">Maximum distance of another locations that will be searched for.</param>
+        /// <param name="maxResults">Limits the maximum of provided results.</param>
+        /// <returns>Ordered set of LocationDistance object, which provides name of the location nearby and the distance to it.</returns>
+        /// <exception cref="CsvProcessingException">Throws in case of CSV data parsing error.</exception>
         Task<IEnumerable<LocationDistance>> GetNearbyLocations(Location location, int maxDistance, int maxResults);
     }
 
+    /// <inheritdoc/>
     public class LocationProvider : ILocationProvider
     {
+        /// <inheritdoc/>
         public async Task<IEnumerable<LocationDistance>> GetNearbyLocations(Location location, int maxDistance, int maxResults)
         {
             const string path = "Resources\\locations.csv";
@@ -23,7 +36,7 @@ namespace Implementation
             while (!reader.EndOfStream && await reader.ReadLineAsync() is { } line)
             {
                 if (string.IsNullOrEmpty(line) //skip empty lines
-                    || line.Contains("\u0000") //skip end of file
+                    || line.Contains('\u0000') //skip end of file
                     || !line.StartsWith("\"")) //skip header or improperly formatted lines
                 {
                     continue;
@@ -42,7 +55,7 @@ namespace Implementation
                 }
                 else
                 {
-                    throw new Exception($"CSV reading failed on line parsing. Line: {line}");
+                    throw new CsvProcessingException($"CSV reading failed on line parsing. Line: {line}");
                 }
             }
 
